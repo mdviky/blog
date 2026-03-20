@@ -10,6 +10,9 @@ use App\Events\PostCreated;
 use App\Listeners\SendPostNotification;
 
 use Illuminate\Support\Facades\Event;
+use App\Events\UserRegistered;
+use App\Listeners\SendWelcomeMail;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,6 +20,9 @@ class AppServiceProvider extends ServiceProvider
     protected $listen = [
         PostCreated::class => [
             SendPostNotification::class,
+        ],
+        UserRegistered::class => [
+            SendWelcomeMail::class,
         ],
     ];
     
@@ -47,6 +53,10 @@ class AppServiceProvider extends ServiceProvider
             View::share('categories', Category::all());
         } catch (\Exception $e) {
             View::share('categories', collect());
+        }
+
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
         }
 
     }
