@@ -55,9 +55,9 @@ class AppServiceProvider extends ServiceProvider
             View::share('categories', collect());
         }
 
-        if (config('app.env') === 'production') {
+        /* if (config('app.env') === 'production') {
             URL::forceScheme('https');
-        }
+        } */
 
     }
 }
