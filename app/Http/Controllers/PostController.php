@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\Category;
 use App\Events\PostCreated;
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
 
 class PostController extends Controller
 {
@@ -38,19 +40,12 @@ class PostController extends Controller
     }
 
     // Save new post to database
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        $validated = $request->validate([
-            'title'       => 'required|string|max:255',
-            'body'        => 'required|string',
-            'category_id' => 'nullable|exists:categories,id',
-            'status'      => 'required|in:draft,published',
-            'tags'        => 'nullable|array',
-            'tags.*'      => 'exists:tags,id',
-        ]);
-
-        $validated['user_id'] = auth()->id();
-        $validated['slug']    = \Illuminate\Support\Str::slug($validated['title']);
+        // $request->validated() already contains only validated data
+        $validated = $request->validated();
+        $validated['user_id']    = auth()->id();
+        $validated['slug']       = \Illuminate\Support\Str::slug($validated['title']);
 
         if ($validated['status'] === 'published') {
             $validated['published_at'] = now();
@@ -58,10 +53,8 @@ class PostController extends Controller
 
         $post = \App\Models\Post::create($validated);
 
-        // Fire the event
         PostCreated::dispatch($post);
 
-        // Sync tags via pivot table (belongsToMany)
         if ($request->has('tags')) {
             $post->tags()->sync($request->tags);
         }
@@ -78,16 +71,16 @@ class PostController extends Controller
     }
 
     // Save edited post
-    public function update(Request $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $post)
     {
-        $validated = $request->validate([
-            'title'       => 'required|string|max:255',
-            'body'        => 'required|string',
-            'category_id' => 'nullable|exists:categories,id',
-            'status'      => 'required|in:draft,published',
-            'tags'        => 'nullable|array',
-            'tags.*'      => 'exists:tags,id',
-        ]);
+
+
+        /* echo "<pre>";
+        print_r($request);
+        print_r($request->all());
+        echo "</pre>";
+        exit; */
+        $validated = $request->validated();
 
         $validated['slug'] = \Illuminate\Support\Str::slug($validated['title']);
 
@@ -96,8 +89,8 @@ class PostController extends Controller
         }
 
         $post->update($validated);
-
         // Sync tags via pivot table
+
         $post->tags()->sync($request->tags ?? []);
 
         return redirect()->route('posts.index')->with('success', 'Post updated!');

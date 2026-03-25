@@ -36,7 +36,7 @@
 
             {{-- Post content --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4 p-6">
-                <a href="{{ route('posts.index') }}" style="color: #3b82f6;"><-- Back to all posts</a>
+                <a href="{{ route('posts.index') }}" style="color: #3b82f6;"><-- Back to all posts</a>                
 
                 <h1 class="text-2xl font-bold mt-4">{{ $post->title }}</h1>
 
@@ -115,6 +115,7 @@
                     <p>Please <a href="{{ route('login') }}" class="text-blue-500">login</a> to leave a comment.</p>
                 </div>
             @endauth
+                <a href="{{ route('admin.posts.edit', $post) }}" style="color: #3b82f6;">Edit post</a>
 
         </div>
     </div>
