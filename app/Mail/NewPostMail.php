@@ -9,20 +9,18 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use App\Models\User;
 
-
-class WelcomeMail extends Mailable
+class NewPostMail extends Mailable
 {
     use Queueable, SerializesModels;
-    public User $user;
+    public Post $post;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(User $user)
+    public function __construct(Post $post)
     {
-        $this->user = $user;
+        $this->post = $post;
     }
 
     /**
@@ -31,7 +29,7 @@ class WelcomeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to my New blog!',
+            subject: 'New Post: ' . $this->post->title,
         );
     }
 
@@ -41,8 +39,7 @@ class WelcomeMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            //view: 'view.name',
-            view: 'emails.welcome',
+            view: 'emails.new-post',
         );
     }
 

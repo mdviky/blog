@@ -3,14 +3,20 @@
 namespace App\Listeners;
 
 use App\Events\PostCreated;
+use App\Mail\NewPostMail;
+use Illuminate\Support\Facades\Mail;
+
+
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
 use Illuminate\Support\Facades\Log;
 
 
-class SendPostNotification
+class SendPostNotification implements ShouldQueue
 {
+        use InteractsWithQueue;
+
     /**
      * Create the event listener.
      */
@@ -35,5 +41,9 @@ class SendPostNotification
 
         // When you have mail configured, you would do:
         // Mail::to('subscribers@blog.com')->send(new NewPostMail($post));
+
+        // Send email notification
+        Mail::to('admin@blog.com')->send(new NewPostMail($post));
+        
     }
 }
