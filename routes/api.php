@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\AgentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,3 +27,7 @@ Route::get('/posts/{post}', [PostController::class, 'show']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/posts', [PostController::class, 'store']);
 });
+
+Route::post('/agent', [AgentController::class, 'run'])->middleware('auth:sanctum');
+Route::get('/agent/status/{jobId}', [AgentController::class, 'status'])->middleware('auth:sanctum');
+
