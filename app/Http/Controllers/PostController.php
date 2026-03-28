@@ -14,6 +14,7 @@ class PostController extends Controller
     // Show all published posts
     public function index()
     {
+        //dd(auth()->id());
         $posts = Post::with(['user', 'category', 'tags'])
             ->where('status', 'published')
             ->latest()
@@ -51,7 +52,15 @@ class PostController extends Controller
             $validated['published_at'] = now();
         }
 
-        $post = \App\Models\Post::create($validated);
+        //$post = \App\Models\Post::create($validated);
+            /* $post = Post::create([
+                ...$request->validated(),
+                'user_id' => auth()->id()
+            ]); */
+
+        $post = new Post($validated);
+        $post->user_id = auth()->id();
+        $post->save();
 
         PostCreated::dispatch($post);
 

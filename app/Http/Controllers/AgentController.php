@@ -2,19 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\AgentService;
 use Illuminate\Http\Request;
 use App\Models\AgentResult;
 use App\Jobs\AgentJob;
 use Illuminate\Support\Str;
 
-
 class AgentController extends Controller
 {
     public function run(Request $request) {
         $request->validate([
-            'message' => 'required|string|max:500'
+            'message' => 'required|string|max:500',
+            'conversationId' => 'sometimes|string|uuid'
         ]);
+
+        if(!$request->input('conversationId')) {
+            $conversationId = Str::uuid();
+        } else {
+            $conversationId = $request->input('conversationId');
+        }
 
         $jobId = (string) Str::uuid();
 
@@ -25,9 +30,9 @@ class AgentController extends Controller
 
         AgentResult::create($validated);
         
-        AgentJob::dispatch($request->input('message'), $jobId, auth()->id() );
+        AgentJob::dispatch($request->input('message'), $jobId, auth()->id(), $conversationId);
 
-        return response()->json(['jobId' => $jobId]);
+        return response()->json(['jobId' => $jobId, 'conversationId' => $conversationId ]);
     }
 
     public function status($jobId) {

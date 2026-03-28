@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Post extends Model
 {
     protected $fillable = [
-        'user_id', 'category_id', 'title',
+        'category_id', 'title',
         'slug', 'body', 'status', 'published_at'
     ];
 

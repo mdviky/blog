@@ -37,10 +37,15 @@
             @forelse ($posts as $post)
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4 p-6">
                     <h2>
+                        Post Title:
                         <a href="{{ route('posts.show', $post) }}" style="font-weight: bold;">
-                            {{ $post->title }}
+                             {{ $post->title }}
+                            
                         </a>
+                        
                     </h2>
+                    <br/>
+                        Post Id: {{ $post->id }}
 
                     <p>By {{ $post->user->name }}</p>
 

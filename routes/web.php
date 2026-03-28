@@ -45,7 +45,8 @@ Route::middleware('auth')->group(function () {
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
 
-Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+//Route::middleware(['admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         return 'Welcome Admin!';
     })->name('dashboard');

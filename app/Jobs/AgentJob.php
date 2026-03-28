@@ -15,7 +15,7 @@ class AgentJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public string $message, public string $jobId, public int $userId) {}
+    public function __construct(public string $message, public string $jobId, public int $userId, public string $conversationId) {}
 
     /**
      * Execute the job.
@@ -29,10 +29,10 @@ class AgentJob implements ShouldQueue
 
         Auth::loginUsingId($this->userId);
 
-        $result = $agentService->run($this->message);
+        $result = $agentService->run($this->message,$this->userId, $this->conversationId);
 
         $record->status = 'completed';
-        $record->result = $result; // missing this line
+        $record->result = $result;
 
         $record->save();
     }
