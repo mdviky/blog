@@ -12,7 +12,7 @@ class StorePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        //return false;
+        // return false;
         return auth()->check() && auth()->user()->role === 'admin';
 
     }
@@ -21,18 +21,19 @@ class StorePostRequest extends FormRequest
      * Get the validation rules that apply to the request.
      *
      * @return array<string, ValidationRule|array<mixed>|string>
-     */    
+     */
 
     // Validation rules
     public function rules(): array
     {
         return [
-            'title'       => 'required|string|max:255',
-            'body'        => 'required|string',
+            'title' => 'required|string|max:255',
+            'body' => 'required|string',
             'category_id' => 'nullable|exists:categories,id',
-            'status'      => 'required|in:draft,published',
-            'tags'        => 'nullable|array',
-            'tags.*'      => 'exists:tags,id',
+            'status' => 'required|in:draft,published',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
     }
 
@@ -40,10 +41,10 @@ class StorePostRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'title.required'  => 'Please enter a post title.',
-            'body.required'   => 'Please enter the post content.',
+            'title.required' => 'Please enter a post title.',
+            'body.required' => 'Please enter the post content.',
             'status.required' => 'Please select a status.',
-            'status.in'       => 'Status must be draft or published.',
+            'status.in' => 'Status must be draft or published.',
         ];
     }
 }

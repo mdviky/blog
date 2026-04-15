@@ -23,19 +23,20 @@ class UpdatePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title'       => 'sometimes|string|max:255',
-            'body'        => 'sometimes|string',
+            'title' => 'sometimes|string|max:255',
+            'body' => 'sometimes|string',
             'category_id' => 'nullable|exists:categories,id',
-            'status'      => 'sometimes|in:draft,published',
-            'tags'        => 'nullable|array',
-            'tags.*'      => 'exists:tags,id',
+            'status' => 'sometimes|in:draft,published',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ];
     }
 
     public function messages(): array
     {
-        return [            
-            'status.in'       => 'Status must be draft or published.',
+        return [
+            'status.in' => 'Status must be draft or published.',
         ];
     }
 }

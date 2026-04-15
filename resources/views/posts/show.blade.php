@@ -5,25 +5,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body>
-    <nav class="bg-white shadow p-4">
-        <div class="max-w-7xl mx-auto flex justify-between">
-            <a href="{{ route('posts.index') }}" class="font-bold">My Blog</a>
-            <div>
-                @auth
-                    <span>{{ auth()->user()->name }}</span>
-                    <div class="inline-block">
-                        <form action="{{ route('logout') }}" method="POST" style="display:inline">
-                            @csrf
-                            <button type="submit" class="text-red-500">Logout</button>
-                        </form>
-                    </div>
-
-                @else
-                    <a href="{{ route('login') }}">Login</a>
-                @endauth
-            </div>
-        </div>
-    </nav>
+    @include('posts.nav')
 
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
@@ -52,8 +34,11 @@
                 @endif
 
                 {{-- belongsToMany: post → tags --}}
+                # Tags:
                 @foreach ($post->tags as $tag)
-                    <span>[{{ $tag->name }}]</span>
+                    <span class="bg-gray-200 text-gray-800 text-xs font-semibold px-2 py-1 rounded">
+                        {{ $tag->name }}
+                    </span>
                 @endforeach
 
                 <hr class="my-4">

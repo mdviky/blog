@@ -7,10 +7,12 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Admin\UserController;
 //use App\Http\Controllers\AgentController;
 
-/* use App\Models\Post;
+/*
+use App\Models\Post;
 use Illuminate\Support\Facades\Auth; */
 
-/* use EchoLabs\Prism\Prism;
+/*
+use EchoLabs\Prism\Prism;
 use EchoLabs\Prism\Enums\Provider;
 */
 
@@ -18,10 +20,11 @@ use EchoLabs\Prism\Enums\Provider;
 Prism LLM integration example. For more details on setting up Prism, see the documentation:
 https://prismphp.com/getting-started/installation.html
 */
+
 /*
 use Prism\Prism\Facades\Prism;
 use Prism\Prism\Enums\Provider;
- */
+*/
 
 Route::get('/', function () {
     return view('welcome');
@@ -74,9 +77,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     return $response->text; */
 
 
-
-
-
 /*     $response = Prism::text()
         
         ->using(Provider::Gemini, 'gemini-3-flash-preview')
@@ -90,5 +90,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 //Route::post('/agent', [AgentController::class, 'run'])->middleware('auth');
 
+Route::get('/chat', function () {
+    return view('chat');
+});
 
 require __DIR__ . '/auth.php';

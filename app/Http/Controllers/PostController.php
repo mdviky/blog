@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Post;
-use App\Models\Category;
 use App\Events\PostCreated;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Models\Category;
+use App\Models\Post;
+use App\Models\Tag;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
     // Show all published posts
     public function index()
     {
-        //dd(auth()->id());
+        // dd(auth()->id());
         $posts = Post::with(['user', 'category', 'tags'])
             ->where('status', 'published')
             ->latest()
@@ -31,12 +33,12 @@ class PostController extends Controller
         return view('posts.show', compact('post'));
     }
 
-
     // Show form to create a new post
     public function create()
     {
-        $categories = \App\Models\Category::all();
-        $tags = \App\Models\Tag::all();
+        $categories = Category::all();
+        $tags = Tag::all();
+
         return view('admin.posts.create', compact('categories', 'tags'));
     }
 
@@ -45,18 +47,17 @@ class PostController extends Controller
     {
         // $request->validated() already contains only validated data
         $validated = $request->validated();
-        $validated['user_id']    = auth()->id();
-        $validated['slug']       = \Illuminate\Support\Str::slug($validated['title']);
+        $validated['user_id'] = auth()->id();
+        $validated['slug'] = Str::slug($validated['title']);
 
         if ($validated['status'] === 'published') {
             $validated['published_at'] = now();
         }
 
-        //$post = \App\Models\Post::create($validated);
-            /* $post = Post::create([
-                ...$request->validated(),
-                'user_id' => auth()->id()
-            ]); */
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('posts', 'public');
+            $validated['image'] = $path;
+        }
 
         $post = new Post($validated);
         $post->user_id = auth()->id();
@@ -74,15 +75,15 @@ class PostController extends Controller
     // Show form to edit a post
     public function edit(Post $post)
     {
-        $categories = \App\Models\Category::all();
-        $tags = \App\Models\Tag::all();
+        $categories = Category::all();
+        $tags = Tag::all();
+
         return view('admin.posts.edit', compact('post', 'categories', 'tags'));
     }
 
     // Save edited post
     public function update(UpdatePostRequest $request, Post $post)
     {
-
 
         /* echo "<pre>";
         print_r($request);
@@ -91,10 +92,19 @@ class PostController extends Controller
         exit; */
         $validated = $request->validated();
 
-        $validated['slug'] = \Illuminate\Support\Str::slug($validated['title']);
+        $validated['slug'] = Str::slug($validated['title']);
 
-        if ($validated['status'] === 'published' && !$post->published_at) {
+        if ($validated['status'] === 'published' && ! $post->published_at) {
             $validated['published_at'] = now();
+        }
+
+        if ($request->hasFile('image')) {
+            // Delete old image if exists
+            if ($post->image) {
+                Storage::disk('public')->delete($post->image);
+            }
+            $path = $request->file('image')->store('posts', 'public');
+            $validated['image'] = $path;
         }
 
         $post->update($validated);
@@ -108,6 +118,9 @@ class PostController extends Controller
     // Delete a post
     public function destroy(Post $post)
     {
+        if ($post->image) {
+            Storage::disk('public')->delete($post->image);
+        }
         $post->tags()->detach(); // remove pivot table rows first
         $post->delete();
 

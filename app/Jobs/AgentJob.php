@@ -27,8 +27,9 @@ class AgentJob implements ShouldQueue
         $record->status = 'processing';
         $record->save();
 
-        Auth::loginUsingId($this->userId);
-
+  //      Auth::loginUsingId($this->userId);
+Auth::shouldUse('web');
+Auth::loginUsingId($this->userId);
         $result = $agentService->run($this->message,$this->userId, $this->conversationId);
 
         $record->status = 'completed';

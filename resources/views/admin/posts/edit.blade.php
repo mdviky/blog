@@ -7,7 +7,7 @@
     <h1>Edit Post</h1>
     <a href="{{ route('posts.index') }}">Back to blog</a>
 
-    <form action="{{ route('admin.posts.update', $post) }}" method="POST">
+    <form action="{{ route('admin.posts.update', $post) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -15,6 +15,18 @@
             <label>Title</label>
             <input type="text" name="title" value="{{ old('title', $post->title) }}" required>
             @error('title') <p>{{ $message }}</p> @enderror
+        </div>
+
+        <div>
+            <label>Current Image</label><br>
+            @if($post->image)
+                <img src="{{ asset('storage/' . $post->image) }}" width="200"><br>
+            @else
+                <p>No image uploaded</p>
+            @endif
+            <label>Change Image</label>
+            <input type="file" name="image">
+            @error('image') <p>{{ $message }}</p> @enderror
         </div>
 
         <div>

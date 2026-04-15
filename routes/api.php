@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\PostController;
 use App\Http\Controllers\AgentController;
+use App\Http\Controllers\AuthApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,3 +32,5 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::post('/agent', [AgentController::class, 'run'])->middleware('auth:sanctum');
 Route::get('/agent/status/{jobId}', [AgentController::class, 'status'])->middleware('auth:sanctum');
 
+Route::post('/login', [AuthApiController::class, 'login']);
+Route::post('/logout', [AuthApiController::class, 'logout'])->middleware('auth:sanctum');
