@@ -12,10 +12,10 @@ use Prism\Prism\ValueObjects\Messages\UserMessage;
 use Prism\Prism\ValueObjects\Messages\AssistantMessage;
 use Illuminate\Support\Facades\RateLimiter;
 
-use App\Agent\Tools\CreatePost;
+use Prism\Relay\Facades\Relay;
 
-use Laravel\Boost\Facades\Boost;
-use Laravel\Boost\Boost;
+
+use App\Agent\Tools\CreatePost;
 
 
 class AgentService
@@ -39,45 +39,28 @@ class AgentService
         // Add current user message to history
         $history[] = new UserMessage($userMessage);
 
-        $tools = [
+        $appTools = [
             (new GetPostStatus)->handle(),
             (new GetAllPosts)->handle(),
             (new CreatePost)->handle(),
-            (new UpdatePostStatus)->handle()
+            (new UpdatePostStatus)->handle(),
         ];
-        /*
-        What posts do I have?
-        Which ones are in draft status?
-        */
-
-        //gemini-3-flash-preview
-        //gemini-2.5-flash-lite
-        //gemini-2.5-flash
-        //gemini-2.5-pro
-        //gemini-3.1-flash-lite-preview
-
-        //->using(Provider::OpenAI, 'gpt-5-nano')
-/*         $response = Prism::text()
-            ->using(Provider::Gemini, 'gemini-3.1-flash-lite-preview')
-            ->withSystemPrompt('You are a blog management assistant. You help users manage their blog posts only. You can get post status, list all posts, create new posts, and update post status. If a user asks about anything unrelated to their blog posts, politely decline and redirect them to ask about their posts.')
-            
-            ->withMaxSteps(5)
-            ->withMessages($history)
-            ->withTools($tools)
-            ->asText(); */
+          // MCP filesystem tools via Relay (reads your project files)
+        $mcpTools = Relay::tools('filesystem');
 
         $response = Prism::text()
-            ->using(Provider::Gemini, 'gemini-3.1-flash-lite-preview') // Use your Gemini model
-            ->withTools(Boost::tools(...$tools)) // Register tools with Boost
-            ->withMaxSteps(5) // Limit the number of reasoning steps
-            ->withMessages($history) // Include conversation history
-            ->asText(); // Get response as plain text
+            ->using(Provider::Gemini, 'gemini-3.1-flash-lite-preview')
+            ->withSystemPrompt(
+                'You are a Laravel coding assistant. You have access to the project filesystem. ' .
+                'When asked about models, read files in app/Models/. ' .
+                'Check for $fillable or $guarded properties to verify mass-assignment protection.'
+            )
+            ->withTools([...$appTools, ...$mcpTools]) // ✅ merge both
+            ->withMaxSteps(5) // needs more steps for filesystem reads
+            ->withMessages($history)
+            ->asText();
 
-
-        // Append assistant response to history
         $history[] = new AssistantMessage($response->text);
-
-        // Save updated history — expires in 2 hours
         Cache::put($cacheKey, $history, now()->addHours(2));
 
         return $response->text;

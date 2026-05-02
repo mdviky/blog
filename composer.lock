@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fdda88b322980ac9050a12b19e2eac7e",
+    "content-hash": "c67aa815d4a38c48a4ef6cb0dd0ad145",
     "packages": [
         {
             "name": "brick/math",
@@ -3293,6 +3293,78 @@
                 }
             ],
             "time": "2026-03-20T20:37:17+00:00"
+        },
+        {
+            "name": "prism-php/relay",
+            "version": "v1.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/prism-php/relay.git",
+                "reference": "c54fa7297d04f2f01c73cd1cd6046e28fe0fe42a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/prism-php/relay/zipball/c54fa7297d04f2f01c73cd1cd6046e28fe0fe42a",
+                "reference": "c54fa7297d04f2f01c73cd1cd6046e28fe0fe42a",
+                "shasum": ""
+            },
+            "require": {
+                "laravel/framework": "^11.0|^12.0|^13.0",
+                "php": "^8.2",
+                "prism-php/prism": ">=0.93 ^0"
+            },
+            "require-dev": {
+                "guzzlehttp/guzzle": "^7.8",
+                "laravel/pint": "^1.14",
+                "mockery/mockery": "^1.6",
+                "orchestra/testbench": "^10.0",
+                "pestphp/pest": "^3.0",
+                "pestphp/pest-plugin-arch": "^3.0",
+                "pestphp/pest-plugin-laravel": "^3.0",
+                "phpstan/extension-installer": "^1.3",
+                "phpstan/phpstan": "^1.11",
+                "phpstan/phpstan-deprecation-rules": "^1.2",
+                "projektgopher/whisky": "^0.7.0",
+                "rector/rector": "^1.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "Relay": "Prism\\Relay\\Facades\\Relay"
+                    },
+                    "providers": [
+                        "Prism\\Relay\\RelayServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Prism\\Relay\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "TJ MIller",
+                    "email": "hello@echolabs.dev"
+                }
+            ],
+            "description": "A Prism tool for interacting with MCP servers",
+            "support": {
+                "issues": "https://github.com/prism-php/relay/issues",
+                "source": "https://github.com/prism-php/relay/tree/v1.8.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sixlive",
+                    "type": "github"
+                }
+            ],
+            "time": "2026-03-20T12:01:53+00:00"
         },
         {
             "name": "psr/clock",

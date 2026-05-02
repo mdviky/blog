@@ -8,6 +8,7 @@ use App\Models\AgentResult;
 use App\Services\AgentService;
 use Illuminate\Support\Facades\Auth;
 
+
 class AgentJob implements ShouldQueue
 {
     use Queueable;
