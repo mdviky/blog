@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\RateLimiter;
 
 use App\Agent\Tools\CreatePost;
 
+use Laravel\Boost\Facades\Boost;
+use Laravel\Boost\Boost;
+
+
 class AgentService
 {
 
@@ -39,7 +43,7 @@ class AgentService
             (new GetPostStatus)->handle(),
             (new GetAllPosts)->handle(),
             (new CreatePost)->handle(),
-            (new UpdatePostStatus)->handle(),
+            (new UpdatePostStatus)->handle()
         ];
         /*
         What posts do I have?
@@ -52,14 +56,23 @@ class AgentService
         //gemini-2.5-pro
         //gemini-3.1-flash-lite-preview
 
-        $response = Prism::text()
+        //->using(Provider::OpenAI, 'gpt-5-nano')
+/*         $response = Prism::text()
             ->using(Provider::Gemini, 'gemini-3.1-flash-lite-preview')
             ->withSystemPrompt('You are a blog management assistant. You help users manage their blog posts only. You can get post status, list all posts, create new posts, and update post status. If a user asks about anything unrelated to their blog posts, politely decline and redirect them to ask about their posts.')
-            //->using(Provider::OpenAI, 'gpt-5-nano')
+            
             ->withMaxSteps(5)
             ->withMessages($history)
             ->withTools($tools)
-            ->asText();
+            ->asText(); */
+
+        $response = Prism::text()
+            ->using(Provider::Gemini, 'gemini-3.1-flash-lite-preview') // Use your Gemini model
+            ->withTools(Boost::tools(...$tools)) // Register tools with Boost
+            ->withMaxSteps(5) // Limit the number of reasoning steps
+            ->withMessages($history) // Include conversation history
+            ->asText(); // Get response as plain text
+
 
         // Append assistant response to history
         $history[] = new AssistantMessage($response->text);

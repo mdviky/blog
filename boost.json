@@ -1,0 +1,20 @@
+{
+    "agents": [
+        "gemini"
+    ],
+    "cloud": true,
+    "guidelines": true,
+    "mcp": true,
+    "nightwatch": false,
+    "packages": [
+        "prism-php/prism"
+    ],
+    "sail": false,
+    "skills": [
+        "laravel-best-practices",
+        "mcp-development",
+        "tailwindcss-development",
+        "developing-with-prism",
+        "deploying-laravel-cloud"
+    ]
+}
